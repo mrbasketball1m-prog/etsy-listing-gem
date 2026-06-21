@@ -3,98 +3,423 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Etsy Listing Generator</title>
+<title>ListingGem — Etsy listings that get found</title>
+<meta name="description" content="Paste your product, get a search-optimized Etsy title, description, and 13 tags in seconds. Ready to paste straight into your listing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#faf8f5; --card:#fff; --ink:#1a1a1a; --accent:#e06b3e; --muted:#777; }
-  * { box-sizing:border-box; }
-  body { font-family:-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--ink); margin:0; padding:24px; }
-  .wrap { max-width:640px; margin:0 auto; }
-  h1 { font-size:1.6rem; margin:0 0 4px; }
-  p.sub { color:var(--muted); margin:0 0 24px; }
-  label { display:block; font-weight:600; margin:14px 0 6px; font-size:.92rem; }
-  input, textarea { width:100%; padding:11px 12px; border:1px solid #ddd; border-radius:10px; font-size:1rem; font-family:inherit; }
-  textarea { min-height:70px; resize:vertical; }
-  button { margin-top:18px; width:100%; padding:13px; border:0; border-radius:10px; background:var(--accent); color:#fff; font-size:1.05rem; font-weight:600; cursor:pointer; }
-  button:disabled { opacity:.5; cursor:not-allowed; }
-  .out { white-space:pre-wrap; background:var(--card); border:1px solid #eee; border-radius:12px; padding:16px; margin-top:20px; display:none; line-height:1.5; }
-  .trial { text-align:center; color:var(--muted); font-size:.85rem; margin-top:14px; }
-  .pay { display:none; background:#fff4ee; border:1px solid #f3cdb9; border-radius:12px; padding:16px; margin-top:18px; text-align:center; }
-  a { color:var(--accent); }
+  :root{
+    --paper:#FAF8F4;
+    --card:#FFFFFF;
+    --ink:#1C1B18;
+    --ink-soft:#6B655B;
+    --line:#ECE7DD;
+    --line-strong:#DED7C9;
+    --coral:#FB5E3B;
+    --coral-deep:#E5431D;
+    --forest:#17413A;
+    --mint:#EAF1ED;
+    --coral-tint:#FFF1EC;
+    --shadow-sm:0 1px 2px rgba(28,27,24,.05), 0 2px 8px rgba(28,27,24,.04);
+    --shadow-md:0 4px 14px rgba(28,27,24,.07), 0 18px 40px rgba(28,27,24,.07);
+    --radius:18px;
+    --radius-sm:12px;
+    --display:"Bricolage Grotesque", system-ui, sans-serif;
+    --body:"Hanken Grotesk", system-ui, sans-serif;
+    --mono:"Space Mono", ui-monospace, monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    font-family:var(--body);
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+    overflow-x:hidden;
+  }
+  /* ambient depth, not noise */
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(46rem 26rem at 82% -8%, rgba(251,94,59,.10), transparent 60%),
+      radial-gradient(40rem 24rem at 2% 8%, rgba(23,65,58,.08), transparent 60%);
+  }
+  .shell{position:relative; z-index:1;}
+
+  a{color:var(--coral-deep); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  /* ---------- header ---------- */
+  header{
+    max-width:760px; margin:0 auto;
+    padding:22px 24px 6px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--display); font-weight:800; font-size:1.15rem; letter-spacing:-.01em;}
+  .brand .mark{
+    width:30px; height:30px; border-radius:9px;
+    background:var(--coral); color:#fff;
+    display:grid; place-items:center; box-shadow:var(--shadow-sm);
+    transform:rotate(-6deg);
+  }
+  .brand .mark svg{width:17px; height:17px;}
+  .pill{
+    font-family:var(--mono); font-size:.72rem; font-weight:700; letter-spacing:.02em;
+    color:var(--forest); background:var(--mint);
+    border:1px solid #D6E3DC; border-radius:999px; padding:6px 12px;
+    white-space:nowrap;
+  }
+
+  /* ---------- hero ---------- */
+  main{max-width:760px; margin:0 auto; padding:0 24px 64px;}
+  .hero{padding:40px 4px 26px;}
+  .eyebrow-top{
+    font-family:var(--mono); font-size:.74rem; font-weight:700;
+    text-transform:uppercase; letter-spacing:.14em; color:var(--coral-deep);
+    margin:0 0 14px;
+  }
+  h1{
+    font-family:var(--display); font-weight:800;
+    font-size:clamp(2.1rem, 6vw, 3.2rem); line-height:1.02; letter-spacing:-.025em;
+    margin:0 0 16px; color:var(--ink);
+  }
+  h1 .accent{color:var(--coral);}
+  .sub{font-size:1.06rem; color:var(--ink-soft); margin:0; max-width:46ch;}
+
+  /* ---------- tool card ---------- */
+  .tool{
+    background:var(--card); border:1px solid var(--line);
+    border-radius:var(--radius); padding:24px;
+    box-shadow:var(--shadow-md); margin-top:8px;
+  }
+  .field{margin-bottom:16px;}
+  .field:last-of-type{margin-bottom:0;}
+  label{display:block; font-weight:600; font-size:.9rem; margin-bottom:7px; color:var(--ink);}
+  label .opt{color:var(--ink-soft); font-weight:500; font-size:.82rem;}
+  input, textarea{
+    width:100%; font-family:var(--body); font-size:1rem; color:var(--ink);
+    background:var(--paper); border:1.5px solid var(--line-strong); border-radius:var(--radius-sm);
+    padding:12px 14px; transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  input::placeholder, textarea::placeholder{color:#A89F90;}
+  textarea{min-height:78px; resize:vertical; line-height:1.5;}
+  input:focus, textarea:focus{
+    outline:none; border-color:var(--coral); background:#fff;
+    box-shadow:0 0 0 4px rgba(251,94,59,.13);
+  }
+
+  .cta{
+    margin-top:22px; width:100%; cursor:pointer;
+    font-family:var(--body); font-weight:700; font-size:1.05rem; color:#fff;
+    background:var(--coral); border:0; border-radius:var(--radius-sm);
+    padding:15px 18px; letter-spacing:.005em;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    box-shadow:0 6px 16px rgba(251,94,59,.28);
+    transition:transform .12s ease, background .15s ease, box-shadow .15s ease;
+  }
+  .cta:hover:not(:disabled){background:var(--coral-deep); transform:translateY(-2px); box-shadow:0 10px 22px rgba(251,94,59,.32);}
+  .cta:active:not(:disabled){transform:translateY(0);}
+  .cta:disabled{opacity:.45; cursor:not-allowed; box-shadow:none;}
+  .cta:focus-visible{outline:3px solid var(--forest); outline-offset:3px;}
+
+  .spinner{width:18px; height:18px; border-radius:50%; border:2.5px solid rgba(255,255,255,.45); border-top-color:#fff; animation:spin .7s linear infinite; display:none;}
+  .cta.loading .spinner{display:inline-block;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .trial{text-align:center; font-family:var(--mono); font-size:.78rem; color:var(--ink-soft); margin-top:14px;}
+  .trial b{color:var(--forest);}
+
+  /* ---------- output ---------- */
+  #output{margin-top:22px; display:none;}
+  #output.show{display:block; animation:rise .4s cubic-bezier(.2,.7,.2,1) both;}
+  @keyframes rise{from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;}}
+
+  .result{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow-md); overflow:hidden;
+  }
+  .result-banner{
+    background:var(--forest); color:#EAF1ED;
+    font-family:var(--mono); font-size:.74rem; font-weight:700; letter-spacing:.04em;
+    padding:9px 22px; display:flex; align-items:center; gap:8px;
+  }
+  .result-banner .dot{width:7px; height:7px; border-radius:50%; background:#7FE0B0;}
+  .block{padding:20px 22px;}
+  .block-head{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px;}
+  .eyebrow{font-family:var(--mono); font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:var(--coral-deep);}
+  .title-text{font-family:var(--display); font-weight:700; font-size:1.18rem; line-height:1.3; letter-spacing:-.01em; margin:0;}
+  .count{font-family:var(--mono); font-size:.74rem; color:var(--ink-soft); margin-top:9px; display:inline-block;}
+  .count.over{color:var(--coral-deep); font-weight:700;}
+  .desc-text{white-space:pre-wrap; font-size:.98rem; color:#2C2A25; line-height:1.62;}
+  .chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    font-family:var(--body); font-size:.85rem; font-weight:500; color:var(--forest);
+    background:var(--mint); border:1px solid #D6E3DC; border-radius:999px; padding:5px 12px;
+  }
+  .tags-meta{font-family:var(--mono); font-size:.72rem; color:var(--ink-soft); margin-top:12px;}
+
+  /* stitched divider — the craft signature */
+  .stitch{height:0; border-top:2px dashed var(--line-strong); margin:0 22px; opacity:.9;}
+
+  .copy{
+    font-family:var(--mono); font-size:.72rem; font-weight:700; cursor:pointer;
+    color:var(--forest); background:transparent; border:1.5px solid var(--line-strong);
+    border-radius:8px; padding:5px 11px; transition:all .14s ease; white-space:nowrap;
+  }
+  .copy:hover{border-color:var(--forest); background:var(--mint);}
+  .copy.done{color:#fff; background:var(--forest); border-color:var(--forest);}
+  .copy:focus-visible{outline:2px solid var(--coral); outline-offset:2px;}
+
+  /* paywall + error */
+  .paywall{
+    display:none; margin-top:22px; text-align:center;
+    background:var(--coral-tint); border:1px solid #F6CFC2; border-radius:var(--radius);
+    padding:22px;
+  }
+  .paywall h3{font-family:var(--display); font-weight:700; font-size:1.15rem; margin:0 0 6px;}
+  .paywall p{margin:0 0 14px; color:var(--ink-soft); font-size:.95rem;}
+  .paywall .unlock{
+    display:inline-block; font-weight:700; color:#fff; background:var(--coral);
+    border-radius:var(--radius-sm); padding:12px 22px; box-shadow:0 6px 16px rgba(251,94,59,.28);
+    transition:transform .12s ease, background .15s ease;
+  }
+  .paywall .unlock:hover{background:var(--coral-deep); transform:translateY(-2px); text-decoration:none;}
+
+  .error{
+    display:none; margin-top:18px;
+    background:#FDF2EF; border:1px solid #F4CFC4; border-radius:var(--radius-sm);
+    padding:14px 16px; color:#8A2A14; font-size:.92rem;
+  }
+  .error b{font-family:var(--mono); font-size:.78rem;}
+
+  footer{text-align:center; color:var(--ink-soft); font-size:.8rem; padding:8px 24px 36px;}
+
+  @media (max-width:560px){
+    .tool{padding:18px;}
+    .block{padding:16px 16px;}
+    .stitch{margin:0 16px;}
+    .hero{padding:28px 2px 20px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important;}
+    .cta:hover{transform:none;}
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Etsy Listing Generator</h1>
-  <p class="sub">SEO-optimized title, description &amp; 13 tags in seconds. Built to rank and sell.</p>
+<div class="shell">
+  <header>
+    <div class="brand">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7-7V3.4h10.2l6.8 6.8a2 2 0 0 1 0 2.8Z"/>
+          <circle cx="7.5" cy="7.5" r="1.4" fill="currentColor" stroke="none"/>
+        </svg>
+      </span>
+      ListingGem
+    </div>
+    <span class="pill" id="pill">3 free listings</span>
+  </header>
 
-  <label>Product</label>
-  <input id="product" placeholder="e.g. handmade ceramic coffee mug, matte black, 350ml">
+  <main>
+    <section class="hero">
+      <p class="eyebrow-top">Etsy SEO, done in seconds</p>
+      <h1>Etsy listings that <span class="accent">get found.</span></h1>
+      <p class="sub">Paste your product. Get a search-optimized title, description, and 13 tags — ready to paste straight into your listing.</p>
+    </section>
 
-  <label>Seed keywords (optional)</label>
-  <input id="keywords" placeholder="e.g. minimalist mug, gift for coffee lover">
+    <section class="tool">
+      <div class="field">
+        <label for="product">Product</label>
+        <input id="product" placeholder="e.g. handmade ceramic coffee mug, matte black, 350ml">
+      </div>
+      <div class="field">
+        <label for="keywords">Seed keywords <span class="opt">— optional</span></label>
+        <input id="keywords" placeholder="e.g. minimalist mug, gift for coffee lover">
+      </div>
+      <div class="field">
+        <label for="details">Extra details <span class="opt">— optional</span></label>
+        <textarea id="details" placeholder="material, size, who it's for, personalization, occasion..."></textarea>
+      </div>
 
-  <label>Extra details (optional)</label>
-  <textarea id="details" placeholder="material, size, who it's for, personalization, occasion..."></textarea>
+      <button class="cta" id="go">
+        <span class="spinner" aria-hidden="true"></span>
+        <span class="cta-label">Generate listing</span>
+      </button>
+      <p class="trial" id="trial"></p>
+    </section>
 
-  <button id="go">Generate listing</button>
-  <div class="trial" id="trial"></div>
+    <div class="error" id="error"></div>
+    <div id="output" aria-live="polite"></div>
 
-  <div class="out" id="out"></div>
+    <div class="paywall" id="paywall">
+      <h3>You've used your 3 free listings</h3>
+      <p>Unlock unlimited listings and keep your shop ranking.</p>
+      <a class="unlock" href="#REPLACE_WITH_YOUR_CHECKOUT_LINK">Get unlimited access</a>
+    </div>
+  </main>
 
-  <div class="pay" id="pay">
-    <strong>Free trial used up.</strong><br>
-    Unlock unlimited listings — <a href="#REPLACE_WITH_YOUR_CHECKOUT_LINK">get access &rarr;</a>
-  </div>
+  <footer>ListingGem · built for Etsy sellers</footer>
 </div>
 
 <script>
   const BACKEND = "https://etsy-listing-gem-production.up.railway.app";
   const FREE = 3;
+  const TITLE_LIMIT = 140;
 
+  const $ = (id) => document.getElementById(id);
   const usedN = () => parseInt(localStorage.getItem("gen_used") || "0", 10);
   const setUsed = (n) => { localStorage.setItem("gen_used", n); render(); };
 
-  function render() {
+  function render(){
     const left = Math.max(0, FREE - usedN());
-    document.getElementById("trial").textContent = left > 0 ? left + " free listing(s) left" : "";
-    document.getElementById("pay").style.display = left > 0 ? "none" : "block";
-    document.getElementById("go").disabled = left <= 0;
+    $("pill").textContent = left > 0 ? left + " free listing" + (left === 1 ? "" : "s") : "Trial used";
+    $("trial").innerHTML = left > 0 ? "<b>" + left + "</b> free listing" + (left === 1 ? "" : "s") + " left" : "";
+    $("paywall").style.display = left > 0 ? "none" : "block";
+    $("go").disabled = left <= 0;
   }
   render();
 
-  document.getElementById("go").addEventListener("click", async () => {
+  function parseListing(text){
+    const t = (text || "").replace(/\r/g, "");
+    const out = { title:"", description:"", tags:"" };
+    const titleM = t.match(/TITLE:\s*([\s\S]*?)\n\s*DESCRIPTION:/i);
+    const descM  = t.match(/DESCRIPTION:\s*([\s\S]*?)\n\s*TAGS:/i);
+    const tagsM  = t.match(/TAGS:\s*([\s\S]*)/i);
+    if (titleM) out.title = titleM[1].trim();
+    if (descM)  out.description = descM[1].trim();
+    if (tagsM)  out.tags = tagsM[1].trim();
+    if (!out.title && !out.description && !out.tags) out.description = t.trim();
+    return out;
+  }
+
+  async function copyText(str, btn){
+    try{
+      await navigator.clipboard.writeText(str);
+      const old = btn.textContent;
+      btn.textContent = "Copied"; btn.classList.add("done");
+      setTimeout(() => { btn.textContent = old; btn.classList.remove("done"); }, 1500);
+    }catch(e){ btn.textContent = "Press Ctrl+C"; }
+  }
+
+  function makeHead(labelText, copyStr){
+    const head = document.createElement("div");
+    head.className = "block-head";
+    const eb = document.createElement("span");
+    eb.className = "eyebrow"; eb.textContent = labelText;
+    head.appendChild(eb);
+    if (copyStr !== null){
+      const btn = document.createElement("button");
+      btn.className = "copy"; btn.type = "button"; btn.textContent = "Copy";
+      btn.addEventListener("click", () => copyText(copyStr, btn));
+      head.appendChild(btn);
+    }
+    return head;
+  }
+
+  function stitch(){ const d = document.createElement("div"); d.className = "stitch"; return d; }
+
+  function renderResult(parsed){
+    const out = $("output");
+    out.innerHTML = "";
+
+    const card = document.createElement("div");
+    card.className = "result";
+
+    const banner = document.createElement("div");
+    banner.className = "result-banner";
+    const dot = document.createElement("span"); dot.className = "dot";
+    banner.appendChild(dot);
+    banner.appendChild(document.createTextNode("READY TO PASTE INTO ETSY"));
+    card.appendChild(banner);
+
+    const sections = [];
+
+    if (parsed.title){
+      const s = document.createElement("section"); s.className = "block";
+      s.appendChild(makeHead("Title", parsed.title));
+      const p = document.createElement("p"); p.className = "title-text"; p.textContent = parsed.title;
+      s.appendChild(p);
+      const c = document.createElement("span");
+      const len = parsed.title.length;
+      c.className = "count" + (len > TITLE_LIMIT ? " over" : "");
+      c.textContent = len + " / " + TITLE_LIMIT + " characters";
+      s.appendChild(c);
+      sections.push(s);
+    }
+
+    if (parsed.description){
+      const s = document.createElement("section"); s.className = "block";
+      s.appendChild(makeHead("Description", parsed.description));
+      const d = document.createElement("div"); d.className = "desc-text"; d.textContent = parsed.description;
+      s.appendChild(d);
+      sections.push(s);
+    }
+
+    if (parsed.tags){
+      const tagList = parsed.tags.split(",").map(x => x.trim()).filter(Boolean);
+      const s = document.createElement("section"); s.className = "block";
+      s.appendChild(makeHead("Tags", tagList.join(", ")));
+      const chips = document.createElement("div"); chips.className = "chips";
+      tagList.forEach(tag => {
+        const c = document.createElement("span"); c.className = "chip"; c.textContent = tag;
+        chips.appendChild(c);
+      });
+      s.appendChild(chips);
+      const meta = document.createElement("div"); meta.className = "tags-meta";
+      meta.textContent = tagList.length + " tags";
+      s.appendChild(meta);
+      sections.push(s);
+    }
+
+    sections.forEach((s, i) => {
+      card.appendChild(s);
+      if (i < sections.length - 1) card.appendChild(stitch());
+    });
+
+    out.appendChild(card);
+    out.classList.add("show");
+  }
+
+  $("go").addEventListener("click", async () => {
     if (usedN() >= FREE) return;
-    const product = document.getElementById("product").value.trim();
-    if (!product) { alert("Add a product first"); return; }
+    const product = $("product").value.trim();
+    if (!product){ $("product").focus(); return; }
 
-    const btn = document.getElementById("go");
-    const out = document.getElementById("out");
-    btn.disabled = true; btn.textContent = "Generating...";
+    const btn = $("go");
+    const label = btn.querySelector(".cta-label");
+    const err = $("error");
+    err.style.display = "none";
+    btn.disabled = true; btn.classList.add("loading"); label.textContent = "Generating…";
 
-    try {
+    try{
       const r = await fetch(BACKEND + "/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
         body: JSON.stringify({
           product: product,
-          keywords: document.getElementById("keywords").value.trim(),
-          details: document.getElementById("details").value.trim()
+          keywords: $("keywords").value.trim(),
+          details: $("details").value.trim()
         })
       });
       const data = await r.json();
-      if (data.result) {
-        out.textContent = data.result;
-        out.style.display = "block";
+      if (data.result){
+        renderResult(parseListing(data.result));
         setUsed(usedN() + 1);
-      } else {
-        out.textContent = "Error: " + (data.error || "unknown") + (data.detail ? " — " + data.detail : "");
-        out.style.display = "block";
+      }else{
+        err.innerHTML = "Something went wrong. <b>" + (data.detail || data.error || "unknown") + "</b>";
+        err.style.display = "block";
       }
-    } catch (e) {
-      out.textContent = "Network error: " + e.message;
-      out.style.display = "block";
-    } finally {
-      btn.textContent = "Generate listing";
+    }catch(e){
+      err.innerHTML = "Can't reach the server. <b>" + e.message + "</b>";
+      err.style.display = "block";
+    }finally{
+      btn.classList.remove("loading"); label.textContent = "Generate listing";
       render();
     }
   });
