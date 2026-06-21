@@ -7,21 +7,17 @@ from flask_cors import CORS
 from openai import OpenAI
 
 app = Flask(__name__)
-CORS(app)  # фронт на GitHub Pages сможет дёргать этот бэкенд
+CORS(app)
 
-# --- Модель: провайдер-агностик через OpenAI-совместимый эндпоинт ---
-# Меняешь провайдера = меняешь 3 переменные окружения, код не трогаешь.
-#   Gemini:   LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/   LLM_MODEL=gemini-2.5-flash-lite
-#   DeepSeek: LLM_BASE_URL=https://api.deepseek.com                                    LLM_MODEL=deepseek-chat
 client = OpenAI(
     api_key=os.environ.get("LLM_API_KEY"),
     base_url=os.environ.get("LLM_BASE_URL", "https://api.deepseek.com"),
 )
 MODEL = os.environ.get("LLM_MODEL", "deepseek-chat")
 
-# --- Анти-абьюз: грубый лимит по IP, чтобы один человек не сжёг бюджет ---
+# Анти-абьюз: грубый лимит по IP, чтобы один человек не сжёг бюджет
 ip_usage = defaultdict(lambda: {"day": date.today().isoformat(), "count": 0})
-DAILY_IP_CAP = 30  # бэкстоп; основной триал-счётчик живёт на фронте
+DAILY_IP_CAP = 30
 
 
 def over_ip_cap(ip):
@@ -35,41 +31,44 @@ def over_ip_cap(ip):
     return False
 
 
-# --- Промпт = ТВОЙ МОАТ. Качество живёт здесь, а не в коде. ---
-SYSTEM_PROMPT = """You are a world-class Etsy SEO and conversion copywriter.
-A seller gives you a product. You produce a complete, ready-to-paste Etsy listing
-optimized to BOTH rank in Etsy search AND convert browsers into buyers.
+# ПРОМПТ = твой моат. Качество живёт здесь.
+SYSTEM_PROMPT = """Ты — эксперт по SEO и продающим текстам для маркетплейсов Wildberries и Ozon.
+Продавец присылает товар. Ты возвращаешь готовую оптимизированную карточку: название под WB,
+название под Ozon, продающее SEO-описание и список поисковых ключей.
 
-Rules:
-- TITLE: max 140 characters. Front-load the 2-3 highest-intent buyer search phrases.
-  Lead with what the item IS plus key attributes (material, style, occasion, recipient).
-  Natural and readable, never keyword-stuffed gibberish.
-- DESCRIPTION: the first 1-2 lines are the search snippet, so they must hook the buyer
-  AND contain the main keywords. Then benefit-driven, scannable copy: what it is, who
-  it's for, why they'll love it, key details (size, material, personalization), and a
-  soft call to action. Short paragraphs or bullets. Warm, human, specific, not corporate.
-- TAGS: exactly 13 tags. Each <= 20 characters. Multi-word long-tail phrases that buyers
-  actually type. Cover variations, occasions, recipients, styles, and use-cases. Do not
-  just repeat the title phrase 13 times.
-- Use only realistic claims based on what the seller told you. Never invent materials,
-  sizes, or specs that were not given or clearly implied.
+Правила:
+- НАЗВАНИЕ WB: до 60 символов. В начало — 3-4 самых частотных поисковых ключа. Сначала ТИП товара,
+  затем ключевые атрибуты (назначение, для кого, материал, цвет). Читаемо, без мусора и спецсимволов.
+- НАЗВАНИЕ OZON: до 200 символов. Схема: тип - бренд (если есть) - модель - важные характеристики
+  (цвет, материал, размер, назначение). Ключей больше, чем в WB, но без переспама.
+- ОПИСАНИЕ: 1000-1500 символов. Первое предложение — с главным ключом. Дальше продающий,
+  человекочитаемый текст: что это, для кого, выгоды, характеристики, применение, уход. Короткие абзацы.
+  Ключевые слова вплетай ЕСТЕСТВЕННО (3-5 вхождений), без переспама и без перечисления через запятую.
+  Без спецсимволов.
+- КЛЮЧЕВЫЕ СЛОВА: 10-15 поисковых фраз, которые реально вводят покупатели — длиннохвостые, разные
+  формулировки, синонимы, назначение, для кого. Через запятую.
+- Используй ТОЛЬКО реальные факты из того, что дал продавец. Не выдумывай материалы, размеры и
+  характеристики, которых не было во вводе.
 
-Output in EXACTLY this format and nothing else:
+Верни СТРОГО в этом формате, без лишнего текста до или после:
 
-TITLE:
-<title>
+НАЗВАНИЕ WB:
+<название>
 
-DESCRIPTION:
-<description>
+НАЗВАНИЕ OZON:
+<название>
 
-TAGS:
-<tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9, tag10, tag11, tag12, tag13>
+ОПИСАНИЕ:
+<описание>
+
+КЛЮЧЕВЫЕ СЛОВА:
+<ключ1, ключ2, ключ3, ...>
 """
 
 
 @app.route("/")
 def home():
-    return "Etsy Listing Generator API is running. Use POST /generate."
+    return "Card Generator API is running. Use POST /generate."
 
 
 @app.route("/health")
@@ -91,9 +90,9 @@ def generate():
         return jsonify({"error": "no_product"}), 400
 
     user_msg = (
-        f"Product: {product}\n"
-        f"Seed keywords: {keywords or '(none given)'}\n"
-        f"Extra details: {details or '(none given)'}"
+        f"Товар: {product}\n"
+        f"Ключевые слова (если есть): {keywords or '—'}\n"
+        f"Доп. детали: {details or '—'}"
     )
 
     try:
@@ -104,7 +103,7 @@ def generate():
                 {"role": "user", "content": user_msg},
             ],
             temperature=0.7,
-            max_tokens=900,
+            max_tokens=1500,
         )
         return jsonify({"result": resp.choices[0].message.content})
     except Exception as e:
@@ -114,5 +113,5 @@ def generate():
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))  # Railway задаёт PORT сам
+    port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)

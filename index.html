@@ -1,132 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ListingGem — Etsy listings that get found</title>
-<meta name="description" content="Paste your product, get a search-optimized Etsy title, description, and 13 tags in seconds. Ready to paste straight into your listing.">
+<title>Карточка PRO — карточки для WB и Ozon, которые находят</title>
+<meta name="description" content="Вставь товар — получи оптимизированное название для Wildberries и Ozon, продающее описание и поисковые ключи за секунды. Готово вставить в карточку.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#FAF8F4;
-    --card:#FFFFFF;
-    --ink:#1C1B18;
-    --ink-soft:#6B655B;
-    --line:#ECE7DD;
-    --line-strong:#DED7C9;
-    --coral:#FB5E3B;
-    --coral-deep:#E5431D;
-    --forest:#17413A;
-    --mint:#EAF1ED;
-    --coral-tint:#FFF1EC;
+    --paper:#FAF8F4; --card:#FFFFFF; --ink:#1C1B18; --ink-soft:#6B655B;
+    --line:#ECE7DD; --line-strong:#DED7C9;
+    --coral:#FB5E3B; --coral-deep:#E5431D; --forest:#17413A;
+    --mint:#EAF1ED; --coral-tint:#FFF1EC;
     --shadow-sm:0 1px 2px rgba(28,27,24,.05), 0 2px 8px rgba(28,27,24,.04);
     --shadow-md:0 4px 14px rgba(28,27,24,.07), 0 18px 40px rgba(28,27,24,.07);
-    --radius:18px;
-    --radius-sm:12px;
+    --radius:18px; --radius-sm:12px;
     --display:"Bricolage Grotesque", system-ui, sans-serif;
     --body:"Hanken Grotesk", system-ui, sans-serif;
     --mono:"Space Mono", ui-monospace, monospace;
   }
-
   *{box-sizing:border-box;}
   html,body{margin:0;}
-  body{
-    font-family:var(--body);
-    color:var(--ink);
-    background:var(--paper);
-    line-height:1.55;
-    -webkit-font-smoothing:antialiased;
-    position:relative;
-    overflow-x:hidden;
-  }
-  /* ambient depth, not noise */
-  body::before{
-    content:"";
-    position:fixed; inset:0; z-index:0; pointer-events:none;
-    background:
-      radial-gradient(46rem 26rem at 82% -8%, rgba(251,94,59,.10), transparent 60%),
-      radial-gradient(40rem 24rem at 2% 8%, rgba(23,65,58,.08), transparent 60%);
-  }
+  body{font-family:var(--body); color:var(--ink); background:var(--paper); line-height:1.55; -webkit-font-smoothing:antialiased; position:relative; overflow-x:hidden;}
+  body::before{content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:radial-gradient(46rem 26rem at 82% -8%, rgba(251,94,59,.10), transparent 60%), radial-gradient(40rem 24rem at 2% 8%, rgba(23,65,58,.08), transparent 60%);}
   .shell{position:relative; z-index:1;}
-
   a{color:var(--coral-deep); text-decoration:none;}
   a:hover{text-decoration:underline;}
 
-  /* ---------- header ---------- */
-  header{
-    max-width:760px; margin:0 auto;
-    padding:22px 24px 6px;
-    display:flex; align-items:center; justify-content:space-between; gap:16px;
-  }
+  header{max-width:760px; margin:0 auto; padding:22px 24px 6px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
   .brand{display:flex; align-items:center; gap:10px; font-family:var(--display); font-weight:800; font-size:1.15rem; letter-spacing:-.01em;}
-  .brand .mark{
-    width:30px; height:30px; border-radius:9px;
-    background:var(--coral); color:#fff;
-    display:grid; place-items:center; box-shadow:var(--shadow-sm);
-    transform:rotate(-6deg);
-  }
+  .brand .mark{width:30px; height:30px; border-radius:9px; background:var(--coral); color:#fff; display:grid; place-items:center; box-shadow:var(--shadow-sm); transform:rotate(-6deg);}
   .brand .mark svg{width:17px; height:17px;}
-  .pill{
-    font-family:var(--mono); font-size:.72rem; font-weight:700; letter-spacing:.02em;
-    color:var(--forest); background:var(--mint);
-    border:1px solid #D6E3DC; border-radius:999px; padding:6px 12px;
-    white-space:nowrap;
-  }
+  .pill{font-family:var(--mono); font-size:.72rem; font-weight:700; letter-spacing:.02em; color:var(--forest); background:var(--mint); border:1px solid #D6E3DC; border-radius:999px; padding:6px 12px; white-space:nowrap;}
 
-  /* ---------- hero ---------- */
   main{max-width:760px; margin:0 auto; padding:0 24px 64px;}
   .hero{padding:40px 4px 26px;}
-  .eyebrow-top{
-    font-family:var(--mono); font-size:.74rem; font-weight:700;
-    text-transform:uppercase; letter-spacing:.14em; color:var(--coral-deep);
-    margin:0 0 14px;
-  }
-  h1{
-    font-family:var(--display); font-weight:800;
-    font-size:clamp(2.1rem, 6vw, 3.2rem); line-height:1.02; letter-spacing:-.025em;
-    margin:0 0 16px; color:var(--ink);
-  }
+  .eyebrow-top{font-family:var(--mono); font-size:.74rem; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:var(--coral-deep); margin:0 0 14px;}
+  h1{font-family:var(--display); font-weight:800; font-size:clamp(2rem, 5.6vw, 3.1rem); line-height:1.04; letter-spacing:-.025em; margin:0 0 16px; color:var(--ink);}
   h1 .accent{color:var(--coral);}
-  .sub{font-size:1.06rem; color:var(--ink-soft); margin:0; max-width:46ch;}
+  .sub{font-size:1.06rem; color:var(--ink-soft); margin:0; max-width:50ch;}
 
-  /* ---------- tool card ---------- */
-  .tool{
-    background:var(--card); border:1px solid var(--line);
-    border-radius:var(--radius); padding:24px;
-    box-shadow:var(--shadow-md); margin-top:8px;
-  }
+  .tool{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow-md); margin-top:8px;}
   .field{margin-bottom:16px;}
   .field:last-of-type{margin-bottom:0;}
   label{display:block; font-weight:600; font-size:.9rem; margin-bottom:7px; color:var(--ink);}
   label .opt{color:var(--ink-soft); font-weight:500; font-size:.82rem;}
-  input, textarea{
-    width:100%; font-family:var(--body); font-size:1rem; color:var(--ink);
-    background:var(--paper); border:1.5px solid var(--line-strong); border-radius:var(--radius-sm);
-    padding:12px 14px; transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
-  }
+  input, textarea{width:100%; font-family:var(--body); font-size:1rem; color:var(--ink); background:var(--paper); border:1.5px solid var(--line-strong); border-radius:var(--radius-sm); padding:12px 14px; transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;}
   input::placeholder, textarea::placeholder{color:#A89F90;}
   textarea{min-height:78px; resize:vertical; line-height:1.5;}
-  input:focus, textarea:focus{
-    outline:none; border-color:var(--coral); background:#fff;
-    box-shadow:0 0 0 4px rgba(251,94,59,.13);
-  }
+  input:focus, textarea:focus{outline:none; border-color:var(--coral); background:#fff; box-shadow:0 0 0 4px rgba(251,94,59,.13);}
 
-  .cta{
-    margin-top:22px; width:100%; cursor:pointer;
-    font-family:var(--body); font-weight:700; font-size:1.05rem; color:#fff;
-    background:var(--coral); border:0; border-radius:var(--radius-sm);
-    padding:15px 18px; letter-spacing:.005em;
-    display:flex; align-items:center; justify-content:center; gap:10px;
-    box-shadow:0 6px 16px rgba(251,94,59,.28);
-    transition:transform .12s ease, background .15s ease, box-shadow .15s ease;
-  }
+  .cta{margin-top:22px; width:100%; cursor:pointer; font-family:var(--body); font-weight:700; font-size:1.05rem; color:#fff; background:var(--coral); border:0; border-radius:var(--radius-sm); padding:15px 18px; display:flex; align-items:center; justify-content:center; gap:10px; box-shadow:0 6px 16px rgba(251,94,59,.28); transition:transform .12s ease, background .15s ease, box-shadow .15s ease;}
   .cta:hover:not(:disabled){background:var(--coral-deep); transform:translateY(-2px); box-shadow:0 10px 22px rgba(251,94,59,.32);}
   .cta:active:not(:disabled){transform:translateY(0);}
   .cta:disabled{opacity:.45; cursor:not-allowed; box-shadow:none;}
   .cta:focus-visible{outline:3px solid var(--forest); outline-offset:3px;}
-
   .spinner{width:18px; height:18px; border-radius:50%; border:2.5px solid rgba(255,255,255,.45); border-top-color:#fff; animation:spin .7s linear infinite; display:none;}
   .cta.loading .spinner{display:inline-block;}
   @keyframes spin{to{transform:rotate(360deg);}}
@@ -134,81 +65,43 @@
   .trial{text-align:center; font-family:var(--mono); font-size:.78rem; color:var(--ink-soft); margin-top:14px;}
   .trial b{color:var(--forest);}
 
-  /* ---------- output ---------- */
   #output{margin-top:22px; display:none;}
   #output.show{display:block; animation:rise .4s cubic-bezier(.2,.7,.2,1) both;}
   @keyframes rise{from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;}}
 
-  .result{
-    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
-    box-shadow:var(--shadow-md); overflow:hidden;
-  }
-  .result-banner{
-    background:var(--forest); color:#EAF1ED;
-    font-family:var(--mono); font-size:.74rem; font-weight:700; letter-spacing:.04em;
-    padding:9px 22px; display:flex; align-items:center; gap:8px;
-  }
+  .result{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow-md); overflow:hidden;}
+  .result-banner{background:var(--forest); color:#EAF1ED; font-family:var(--mono); font-size:.74rem; font-weight:700; letter-spacing:.04em; padding:9px 22px; display:flex; align-items:center; gap:8px;}
   .result-banner .dot{width:7px; height:7px; border-radius:50%; background:#7FE0B0;}
   .block{padding:20px 22px;}
   .block-head{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px;}
-  .eyebrow{font-family:var(--mono); font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:var(--coral-deep);}
-  .title-text{font-family:var(--display); font-weight:700; font-size:1.18rem; line-height:1.3; letter-spacing:-.01em; margin:0;}
+  .eyebrow{font-family:var(--mono); font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--coral-deep);}
+  .title-text{font-family:var(--display); font-weight:700; font-size:1.12rem; line-height:1.32; letter-spacing:-.01em; margin:0;}
   .count{font-family:var(--mono); font-size:.74rem; color:var(--ink-soft); margin-top:9px; display:inline-block;}
   .count.over{color:var(--coral-deep); font-weight:700;}
   .desc-text{white-space:pre-wrap; font-size:.98rem; color:#2C2A25; line-height:1.62;}
   .chips{display:flex; flex-wrap:wrap; gap:8px;}
-  .chip{
-    font-family:var(--body); font-size:.85rem; font-weight:500; color:var(--forest);
-    background:var(--mint); border:1px solid #D6E3DC; border-radius:999px; padding:5px 12px;
-  }
+  .chip{font-family:var(--body); font-size:.85rem; font-weight:500; color:var(--forest); background:var(--mint); border:1px solid #D6E3DC; border-radius:999px; padding:5px 12px;}
   .tags-meta{font-family:var(--mono); font-size:.72rem; color:var(--ink-soft); margin-top:12px;}
-
-  /* stitched divider — the craft signature */
   .stitch{height:0; border-top:2px dashed var(--line-strong); margin:0 22px; opacity:.9;}
 
-  .copy{
-    font-family:var(--mono); font-size:.72rem; font-weight:700; cursor:pointer;
-    color:var(--forest); background:transparent; border:1.5px solid var(--line-strong);
-    border-radius:8px; padding:5px 11px; transition:all .14s ease; white-space:nowrap;
-  }
+  .copy{font-family:var(--mono); font-size:.72rem; font-weight:700; cursor:pointer; color:var(--forest); background:transparent; border:1.5px solid var(--line-strong); border-radius:8px; padding:5px 11px; transition:all .14s ease; white-space:nowrap;}
   .copy:hover{border-color:var(--forest); background:var(--mint);}
   .copy.done{color:#fff; background:var(--forest); border-color:var(--forest);}
   .copy:focus-visible{outline:2px solid var(--coral); outline-offset:2px;}
 
-  /* paywall + error */
-  .paywall{
-    display:none; margin-top:22px; text-align:center;
-    background:var(--coral-tint); border:1px solid #F6CFC2; border-radius:var(--radius);
-    padding:22px;
-  }
+  .paywall{display:none; margin-top:22px; text-align:center; background:var(--coral-tint); border:1px solid #F6CFC2; border-radius:var(--radius); padding:22px;}
   .paywall h3{font-family:var(--display); font-weight:700; font-size:1.15rem; margin:0 0 6px;}
   .paywall p{margin:0 0 14px; color:var(--ink-soft); font-size:.95rem;}
-  .paywall .unlock{
-    display:inline-block; font-weight:700; color:#fff; background:var(--coral);
-    border-radius:var(--radius-sm); padding:12px 22px; box-shadow:0 6px 16px rgba(251,94,59,.28);
-    transition:transform .12s ease, background .15s ease;
-  }
+  .paywall .unlock{display:inline-block; font-weight:700; color:#fff; background:var(--coral); border-radius:var(--radius-sm); padding:12px 22px; box-shadow:0 6px 16px rgba(251,94,59,.28); transition:transform .12s ease, background .15s ease;}
   .paywall .unlock:hover{background:var(--coral-deep); transform:translateY(-2px); text-decoration:none;}
 
-  .error{
-    display:none; margin-top:18px;
-    background:#FDF2EF; border:1px solid #F4CFC4; border-radius:var(--radius-sm);
-    padding:14px 16px; color:#8A2A14; font-size:.92rem;
-  }
+  .error{display:none; margin-top:18px; background:#FDF2EF; border:1px solid #F4CFC4; border-radius:var(--radius-sm); padding:14px 16px; color:#8A2A14; font-size:.92rem;}
   .error b{font-family:var(--mono); font-size:.78rem;}
 
   footer{text-align:center; color:var(--ink-soft); font-size:.8rem; padding:8px 24px 36px;}
 
-  @media (max-width:560px){
-    .tool{padding:18px;}
-    .block{padding:16px 16px;}
-    .stitch{margin:0 16px;}
-    .hero{padding:28px 2px 20px;}
-  }
-  @media (prefers-reduced-motion:reduce){
-    *{animation:none !important; transition:none !important;}
-    .cta:hover{transform:none;}
-  }
+  @media (max-width:560px){.tool{padding:18px;} .block{padding:16px 16px;} .stitch{margin:0 16px;} .hero{padding:28px 2px 20px;}}
+  @media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important;} .cta:hover{transform:none;}}
 </style>
 </head>
 <body>
@@ -221,35 +114,35 @@
           <circle cx="7.5" cy="7.5" r="1.4" fill="currentColor" stroke="none"/>
         </svg>
       </span>
-      ListingGem
+      Карточка PRO
     </div>
-    <span class="pill" id="pill">3 free listings</span>
+    <span class="pill" id="pill">3 бесплатных</span>
   </header>
 
   <main>
     <section class="hero">
-      <p class="eyebrow-top">Etsy SEO, done in seconds</p>
-      <h1>Etsy listings that <span class="accent">get found.</span></h1>
-      <p class="sub">Paste your product. Get a search-optimized title, description, and 13 tags — ready to paste straight into your listing.</p>
+      <p class="eyebrow-top">SEO для WB и Ozon</p>
+      <h1>Карточки, которые <span class="accent">находят.</span></h1>
+      <p class="sub">Вставь товар — получи готовое название для Wildberries и Ozon, продающее описание и поисковые ключи. Сразу вставляй в карточку.</p>
     </section>
 
     <section class="tool">
       <div class="field">
-        <label for="product">Product</label>
-        <input id="product" placeholder="e.g. handmade ceramic coffee mug, matte black, 350ml">
+        <label for="product">Товар</label>
+        <input id="product" placeholder="напр. термокружка из нержавейки, 500 мл, чёрная матовая">
       </div>
       <div class="field">
-        <label for="keywords">Seed keywords <span class="opt">— optional</span></label>
-        <input id="keywords" placeholder="e.g. minimalist mug, gift for coffee lover">
+        <label for="keywords">Ключевые слова <span class="opt">— необязательно</span></label>
+        <input id="keywords" placeholder="напр. термокружка для кофе, подарок мужчине">
       </div>
       <div class="field">
-        <label for="details">Extra details <span class="opt">— optional</span></label>
-        <textarea id="details" placeholder="material, size, who it's for, personalization, occasion..."></textarea>
+        <label for="details">Детали <span class="opt">— необязательно</span></label>
+        <textarea id="details" placeholder="материал, размер, для кого, особенности, назначение..."></textarea>
       </div>
 
       <button class="cta" id="go">
         <span class="spinner" aria-hidden="true"></span>
-        <span class="cta-label">Generate listing</span>
+        <span class="cta-label">Сгенерировать карточку</span>
       </button>
       <p class="trial" id="trial"></p>
     </section>
@@ -258,43 +151,53 @@
     <div id="output" aria-live="polite"></div>
 
     <div class="paywall" id="paywall">
-      <h3>You've used your 3 free listings</h3>
-      <p>Unlock unlimited listings and keep your shop ranking.</p>
-      <a class="unlock" href="#REPLACE_WITH_YOUR_CHECKOUT_LINK">Get unlimited access</a>
+      <h3>Бесплатные карточки закончились</h3>
+      <p>Открой безлимит и продолжай поднимать карточки в топ.</p>
+      <a class="unlock" href="#ВСТАВЬ_ССЫЛКУ_НА_ОПЛАТУ">Получить доступ</a>
     </div>
   </main>
 
-  <footer>ListingGem · built for Etsy sellers</footer>
+  <footer>Карточка PRO · для продавцов Wildberries и Ozon</footer>
 </div>
 
 <script>
   const BACKEND = "https://etsy-listing-gem-production.up.railway.app";
   const FREE = 3;
-  const TITLE_LIMIT = 140;
+  const WB_LIMIT = 60;
+  const OZON_LIMIT = 200;
 
   const $ = (id) => document.getElementById(id);
   const usedN = () => parseInt(localStorage.getItem("gen_used") || "0", 10);
   const setUsed = (n) => { localStorage.setItem("gen_used", n); render(); };
 
+  function plural(n, one, few, many){
+    const m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return one;
+    if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+    return many;
+  }
+
   function render(){
     const left = Math.max(0, FREE - usedN());
-    $("pill").textContent = left > 0 ? left + " free listing" + (left === 1 ? "" : "s") : "Trial used";
-    $("trial").innerHTML = left > 0 ? "<b>" + left + "</b> free listing" + (left === 1 ? "" : "s") + " left" : "";
+    $("pill").textContent = left > 0 ? left + " " + plural(left, "бесплатная", "бесплатных", "бесплатных") : "Лимит исчерпан";
+    $("trial").innerHTML = left > 0 ? "<b>" + left + "</b> " + plural(left, "карточка", "карточки", "карточек") + " осталось" : "";
     $("paywall").style.display = left > 0 ? "none" : "block";
     $("go").disabled = left <= 0;
   }
   render();
 
-  function parseListing(text){
+  function parseCard(text){
     const t = (text || "").replace(/\r/g, "");
-    const out = { title:"", description:"", tags:"" };
-    const titleM = t.match(/TITLE:\s*([\s\S]*?)\n\s*DESCRIPTION:/i);
-    const descM  = t.match(/DESCRIPTION:\s*([\s\S]*?)\n\s*TAGS:/i);
-    const tagsM  = t.match(/TAGS:\s*([\s\S]*)/i);
-    if (titleM) out.title = titleM[1].trim();
-    if (descM)  out.description = descM[1].trim();
-    if (tagsM)  out.tags = tagsM[1].trim();
-    if (!out.title && !out.description && !out.tags) out.description = t.trim();
+    const out = { wb:"", ozon:"", description:"", keywords:"" };
+    const wbM   = t.match(/НАЗВАНИЕ WB:\s*([\s\S]*?)\n\s*НАЗВАНИЕ OZON:/i);
+    const ozM   = t.match(/НАЗВАНИЕ OZON:\s*([\s\S]*?)\n\s*ОПИСАНИЕ:/i);
+    const descM = t.match(/ОПИСАНИЕ:\s*([\s\S]*?)\n\s*КЛЮЧЕВЫЕ СЛОВА:/i);
+    const keyM  = t.match(/КЛЮЧЕВЫЕ СЛОВА:\s*([\s\S]*)/i);
+    if (wbM)   out.wb = wbM[1].trim();
+    if (ozM)   out.ozon = ozM[1].trim();
+    if (descM) out.description = descM[1].trim();
+    if (keyM)  out.keywords = keyM[1].trim();
+    if (!out.wb && !out.ozon && !out.description && !out.keywords) out.description = t.trim();
     return out;
   }
 
@@ -302,9 +205,9 @@
     try{
       await navigator.clipboard.writeText(str);
       const old = btn.textContent;
-      btn.textContent = "Copied"; btn.classList.add("done");
+      btn.textContent = "Скопировано"; btn.classList.add("done");
       setTimeout(() => { btn.textContent = old; btn.classList.remove("done"); }, 1500);
-    }catch(e){ btn.textContent = "Press Ctrl+C"; }
+    }catch(e){ btn.textContent = "Ctrl+C"; }
   }
 
   function makeHead(labelText, copyStr){
@@ -315,73 +218,65 @@
     head.appendChild(eb);
     if (copyStr !== null){
       const btn = document.createElement("button");
-      btn.className = "copy"; btn.type = "button"; btn.textContent = "Copy";
+      btn.className = "copy"; btn.type = "button"; btn.textContent = "Копировать";
       btn.addEventListener("click", () => copyText(copyStr, btn));
       head.appendChild(btn);
     }
     return head;
   }
-
   function stitch(){ const d = document.createElement("div"); d.className = "stitch"; return d; }
 
-  function renderResult(parsed){
+  function titleBlock(label, value, limit){
+    const s = document.createElement("section"); s.className = "block";
+    s.appendChild(makeHead(label, value));
+    const p = document.createElement("p"); p.className = "title-text"; p.textContent = value;
+    s.appendChild(p);
+    const c = document.createElement("span");
+    c.className = "count" + (value.length > limit ? " over" : "");
+    c.textContent = value.length + " / " + limit + " символов";
+    s.appendChild(c);
+    return s;
+  }
+
+  function renderResult(p){
     const out = $("output");
     out.innerHTML = "";
+    const card = document.createElement("div"); card.className = "result";
 
-    const card = document.createElement("div");
-    card.className = "result";
-
-    const banner = document.createElement("div");
-    banner.className = "result-banner";
-    const dot = document.createElement("span"); dot.className = "dot";
-    banner.appendChild(dot);
-    banner.appendChild(document.createTextNode("READY TO PASTE INTO ETSY"));
+    const banner = document.createElement("div"); banner.className = "result-banner";
+    const dot = document.createElement("span"); dot.className = "dot"; banner.appendChild(dot);
+    banner.appendChild(document.createTextNode("ГОТОВО — ВСТАВЛЯЙ В КАРТОЧКУ"));
     card.appendChild(banner);
 
     const sections = [];
+    if (p.wb) sections.push(titleBlock("Название · WB", p.wb, WB_LIMIT));
+    if (p.ozon) sections.push(titleBlock("Название · Ozon", p.ozon, OZON_LIMIT));
 
-    if (parsed.title){
+    if (p.description){
       const s = document.createElement("section"); s.className = "block";
-      s.appendChild(makeHead("Title", parsed.title));
-      const p = document.createElement("p"); p.className = "title-text"; p.textContent = parsed.title;
-      s.appendChild(p);
-      const c = document.createElement("span");
-      const len = parsed.title.length;
-      c.className = "count" + (len > TITLE_LIMIT ? " over" : "");
-      c.textContent = len + " / " + TITLE_LIMIT + " characters";
+      s.appendChild(makeHead("Описание", p.description));
+      const d = document.createElement("div"); d.className = "desc-text"; d.textContent = p.description;
+      s.appendChild(d);
+      const c = document.createElement("span"); c.className = "count";
+      c.textContent = p.description.length + " символов";
       s.appendChild(c);
       sections.push(s);
     }
 
-    if (parsed.description){
+    if (p.keywords){
+      const list = p.keywords.split(",").map(x => x.trim()).filter(Boolean);
       const s = document.createElement("section"); s.className = "block";
-      s.appendChild(makeHead("Description", parsed.description));
-      const d = document.createElement("div"); d.className = "desc-text"; d.textContent = parsed.description;
-      s.appendChild(d);
-      sections.push(s);
-    }
-
-    if (parsed.tags){
-      const tagList = parsed.tags.split(",").map(x => x.trim()).filter(Boolean);
-      const s = document.createElement("section"); s.className = "block";
-      s.appendChild(makeHead("Tags", tagList.join(", ")));
+      s.appendChild(makeHead("Ключевые слова", list.join(", ")));
       const chips = document.createElement("div"); chips.className = "chips";
-      tagList.forEach(tag => {
-        const c = document.createElement("span"); c.className = "chip"; c.textContent = tag;
-        chips.appendChild(c);
-      });
+      list.forEach(k => { const c = document.createElement("span"); c.className = "chip"; c.textContent = k; chips.appendChild(c); });
       s.appendChild(chips);
       const meta = document.createElement("div"); meta.className = "tags-meta";
-      meta.textContent = tagList.length + " tags";
+      meta.textContent = list.length + " " + plural(list.length, "фраза", "фразы", "фраз");
       s.appendChild(meta);
       sections.push(s);
     }
 
-    sections.forEach((s, i) => {
-      card.appendChild(s);
-      if (i < sections.length - 1) card.appendChild(stitch());
-    });
-
+    sections.forEach((s, i) => { card.appendChild(s); if (i < sections.length - 1) card.appendChild(stitch()); });
     out.appendChild(card);
     out.classList.add("show");
   }
@@ -395,7 +290,7 @@
     const label = btn.querySelector(".cta-label");
     const err = $("error");
     err.style.display = "none";
-    btn.disabled = true; btn.classList.add("loading"); label.textContent = "Generating…";
+    btn.disabled = true; btn.classList.add("loading"); label.textContent = "Генерирую…";
 
     try{
       const r = await fetch(BACKEND + "/generate", {
@@ -409,17 +304,17 @@
       });
       const data = await r.json();
       if (data.result){
-        renderResult(parseListing(data.result));
+        renderResult(parseCard(data.result));
         setUsed(usedN() + 1);
       }else{
-        err.innerHTML = "Something went wrong. <b>" + (data.detail || data.error || "unknown") + "</b>";
+        err.innerHTML = "Что-то пошло не так. <b>" + (data.detail || data.error || "неизвестно") + "</b>";
         err.style.display = "block";
       }
     }catch(e){
-      err.innerHTML = "Can't reach the server. <b>" + e.message + "</b>";
+      err.innerHTML = "Не удаётся связаться с сервером. <b>" + e.message + "</b>";
       err.style.display = "block";
     }finally{
-      btn.classList.remove("loading"); label.textContent = "Generate listing";
+      btn.classList.remove("loading"); label.textContent = "Сгенерировать карточку";
       render();
     }
   });
