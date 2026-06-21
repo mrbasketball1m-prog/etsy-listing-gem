@@ -100,7 +100,9 @@ def generate():
             max_tokens=900,
         )
         return jsonify({"result": resp.choices[0].message.content})
-    except Exception as e:
+   except Exception as e:
+        import traceback
+        traceback.print_exc()
         return jsonify({"error": "llm_failed", "detail": str(e)}), 500
 
 
