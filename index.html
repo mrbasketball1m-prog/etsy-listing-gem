@@ -102,6 +102,16 @@
 
   @media (max-width:560px){.tool{padding:18px;} .block{padding:16px 16px;} .stitch{margin:0 16px;} .hero{padding:28px 2px 20px;}}
   @media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important;} .cta:hover{transform:none;}}
+
+  .keybox{margin-top:16px; padding-top:16px; border-top:1px solid #F3D8CC;}
+  .keybox .row{display:flex; gap:8px;}
+  .keybox input{flex:1; font-family:var(--mono); font-size:.9rem; text-transform:uppercase;}
+  .keybox button{font-family:var(--body); font-weight:700; color:#fff; background:var(--forest); border:0; border-radius:var(--radius-sm); padding:0 18px; cursor:pointer; white-space:nowrap; transition:opacity .15s ease;}
+  .keybox button:hover{opacity:.9;}
+  .keybox .msg{font-family:var(--mono); font-size:.74rem; margin-top:9px; min-height:1em;}
+  .keybox .msg.ok{color:var(--forest);}
+  .keybox .msg.bad{color:var(--coral-deep);}
+  .unlocked-banner{display:none; margin-top:22px; text-align:center; background:var(--mint); border:1px solid #D6E3DC; border-radius:var(--radius); padding:16px; font-weight:600; color:var(--forest);}
 </style>
 </head>
 <body>
@@ -154,7 +164,15 @@
       <h3>Бесплатные карточки закончились</h3>
       <p>Открой безлимит и продолжай поднимать карточки в топ.</p>
       <a class="unlock" href="#ВСТАВЬ_ССЫЛКУ_НА_ОПЛАТУ">Получить доступ</a>
+      <div class="keybox">
+        <div class="row">
+          <input id="keyInput" placeholder="CARD-XXXX-XXXX" autocomplete="off">
+          <button id="keyBtn" type="button">Активировать</button>
+        </div>
+        <div class="msg" id="keyMsg"></div>
+      </div>
     </div>
+    <div class="unlocked-banner" id="unlockedBanner">Доступ открыт — генерируй без ограничений ✓</div>
   </main>
 
   <footer>Карточка PRO · для продавцов Wildberries и Ozon</footer>
@@ -177,14 +195,54 @@
     return many;
   }
 
+  const isUnlocked = () => localStorage.getItem("unlocked") === "1";
+
   function render(){
+    if (isUnlocked()){
+      $("pill").textContent = "Безлимит";
+      $("trial").innerHTML = "";
+      $("paywall").style.display = "none";
+      $("unlockedBanner").style.display = "block";
+      $("go").disabled = false;
+      return;
+    }
     const left = Math.max(0, FREE - usedN());
     $("pill").textContent = left > 0 ? left + " " + plural(left, "бесплатная", "бесплатных", "бесплатных") : "Лимит исчерпан";
     $("trial").innerHTML = left > 0 ? "<b>" + left + "</b> " + plural(left, "карточка", "карточки", "карточек") + " осталось" : "";
     $("paywall").style.display = left > 0 ? "none" : "block";
+    $("unlockedBanner").style.display = "none";
     $("go").disabled = left <= 0;
   }
   render();
+
+  // --- активация ключа ---
+  $("keyBtn").addEventListener("click", async () => {
+    const key = $("keyInput").value.trim().toUpperCase();
+    const msg = $("keyMsg");
+    if (!key){ msg.className = "msg bad"; msg.textContent = "Введите ключ"; return; }
+    const btn = $("keyBtn");
+    btn.disabled = true; btn.textContent = "Проверяю…";
+    msg.className = "msg"; msg.textContent = "";
+    try{
+      const r = await fetch(BACKEND + "/redeem", {
+        method:"POST", headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ key: key })
+      });
+      const data = await r.json();
+      if (data.valid){
+        localStorage.setItem("unlocked", "1");
+        msg.className = "msg ok"; msg.textContent = "Готово! Доступ открыт.";
+        render();
+      }else{
+        msg.className = "msg bad";
+        msg.textContent = data.error === "not_found" ? "Ключ не найден" : "Не удалось проверить ключ";
+      }
+    }catch(e){
+      msg.className = "msg bad"; msg.textContent = "Сервер недоступен";
+    }finally{
+      btn.disabled = false; btn.textContent = "Активировать";
+    }
+  });
 
   function parseCard(text){
     const t = (text || "").replace(/\r/g, "");
@@ -282,7 +340,7 @@
   }
 
   $("go").addEventListener("click", async () => {
-    if (usedN() >= FREE) return;
+    if (!isUnlocked() && usedN() >= FREE) return;
     const product = $("product").value.trim();
     if (!product){ $("product").focus(); return; }
 
@@ -305,7 +363,7 @@
       const data = await r.json();
       if (data.result){
         renderResult(parseCard(data.result));
-        setUsed(usedN() + 1);
+        if (!isUnlocked()) setUsed(usedN() + 1);
       }else{
         err.innerHTML = "Что-то пошло не так. <b>" + (data.detail || data.error || "неизвестно") + "</b>";
         err.style.display = "block";
